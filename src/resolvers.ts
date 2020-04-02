@@ -1,24 +1,40 @@
-import { User, QueryResolvers, Role } from "./graphql"
+import { User, Role, QueryResolvers, UserResolvers } from './graphql'
+import { Manager, RequestHandler } from './Manager'
 
-const me:User = {
-  id: '123',
-  email: 'email@email.com',
-  username: 'hello_world',
-  role: Role.User
+const user = (id: string): User => {
+  return {
+    id,
+    username: 'Mr. Test',
+    email: 'test@test.com',
+    role: Role.User
+  }
 }
 
-const Query:QueryResolvers = {
+class UserHandler implements RequestHandler<User> {
+  request(id: string) {
+    return user(id)
+  }
+}
+
+const handler = new UserHandler()
+const manager = new Manager(new URL('http://google.com'), 'abc123', handler)
+
+const Query: QueryResolvers = {
   me: () => {
-    return me
+    return manager.handler.request('me')
   },
   user: (_, { id }) => {
-    return {
-      ...me,
-      id
-    }
+    return manager.handler.request(id)
+  }
+}
+
+const userResolvers: UserResolvers = {
+  email: (parent) => {
+    return `${parent.email} <${parent.username}>`
   }
 }
 
 export default {
-  Query
+  Query,
+  User: userResolvers
 }
