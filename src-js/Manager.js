@@ -1,13 +1,15 @@
 class Manager {
   /**
-   * @type {string}
+   * @type {URL}
    */
   url
   /**
-   * @param {string} url 
+   * @param {URL} url 
+   * @param {string} apiKey
    */
-  constructor(url) {
+  constructor(url, apiKey) {
     this.url = url
+    this.url.searchParams.append('apiKey', apiKey)
   }
 }
 
