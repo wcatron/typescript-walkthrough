@@ -11,11 +11,8 @@
     "@graphql-codegen/typescript": "^1.13.1",
     "@graphql-codegen/typescript-resolvers": "^1.13.1",
     "apollo-server": "^2.11.0",
-    "graphql": "^14.6.0",
-    "typescript": "^3.8.3"
+    "graphql": "^14.6.0"
   },
   "scripts": {
-    "build": "tsc",
-    "generate": "graphql-codegen"
   }
 }
