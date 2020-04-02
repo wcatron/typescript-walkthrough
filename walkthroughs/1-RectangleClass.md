@@ -38,7 +38,7 @@ module.exports = {
 ```
 
 ```js
-const Rectangle = require('./Manager').Rectangle
+const Rectangle = require('./Rectangle').Rectangle
 
 const rectangle = new Rectangle(3, 5)
 
@@ -173,6 +173,12 @@ Explicitly set the return type to void.
 ```
 
 The void here is not necessary.
+
+`null` and `undefined`
+
+- Typescript style guide recommends `undefined` over `null`
+- 
+
 
 ## Notes
 
