@@ -22,22 +22,27 @@ export class Manager {
   }
 }
 
-// index.ts
-class Handler implements RequestHandler {
+// resolvers.ts
+class UserHandler implements RequestHandler {
   request(id: string) {
-    return {
-      id,
-      ...me // from GQL example
-    }
+    return user(id)
   }
 }
 
-const handler = new Handler()
+const userHandler = new Handler()
+const manager = new Manager(new URL('http://google.com'), 'abc123', userHandler)
 
-const manager = new Manager(new URL('http://google.com'), 'abc123', handler)
+//...
 
-console.log(manager.url.toString())
-console.log(manager.handler.request('123'))
+const Query: QueryResolvers = {
+  me: () => {
+    return manager.handler.request('me')
+  },
+  user: (_, { id }) => {
+    return manager.handler.request(id)
+  }
+}
+
 ```
 
 The interface can be re-written as a type and does not have to be over-defined.
@@ -60,6 +65,52 @@ Now what if we want a more *generic* handler?
 
 - Define a handler that returns a `User` by id.
 - Define a handler that returns an array of `Chat`s by user's id.
+
+```ts
+// Manager.ts
+export type RequestHandler<ResponseType> = {
+  request: (id: string) => ResponseType
+  responseToString: (response: ResponseType) => string 
+}
+
+// also update Manager class
+
+// resolver.ts
+const me = (id: string): User => {
+  return {
+    id,
+    email: 'email@email.com',
+    username: 'hello_world',
+    role: Role.User
+  }
+}
+
+const chat = (id: string): Chat => {
+  return {
+    id,
+    users: [],
+    messages: []
+  }
+}
+
+class UserHandler implements RequestHandler<User> {
+  request(id: string) {
+    return user(id)
+  }
+}
+
+const handler = new UserHandler()
+const manager = new Manager(new URL('http://google.com'), 'abc123', handler)
+
+const Query: QueryResolvers = {
+  me: () => {
+    return manager.handler.request('me')
+  },
+  user: (_, { id }) => {
+    return manager.handler.request(id)
+  }
+}
+```
 
 ## Notes
 
@@ -84,3 +135,5 @@ interface SelectableControl {
   select(): void;
 }
 ```
+
+[Typescript Interfaces](https://www.typescriptlang.org/docs/handbook/interfaces.html)
