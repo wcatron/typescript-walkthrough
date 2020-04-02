@@ -29,7 +29,7 @@ class UserHandler implements RequestHandler {
   }
 }
 
-const userHandler = new Handler()
+const userHandler = new UserHandler()
 const manager = new Manager(new URL('http://google.com'), 'abc123', userHandler)
 
 //...
@@ -54,8 +54,8 @@ export type RequestHandler = {
 }
 
 // index.ts
-const handler:RequestHandler = {
-  request:(id) => id
+const userHandler: RequestHandler<User> = {
+  request: (id) => user(id)
 }
 ```
 
@@ -68,9 +68,9 @@ Now what if we want a more *generic* handler?
 
 ```ts
 // Manager.ts
-export type RequestHandler<ResponseType> = {
-  request: (id: string) => ResponseType
-  responseToString: (response: ResponseType) => string 
+export type RequestHandler<TResult> = {
+  request: (id: string) => TResult
+  responseToString: (response: TResult) => string 
 }
 
 // also update Manager class
@@ -85,22 +85,11 @@ const me = (id: string): User => {
   }
 }
 
-const chat = (id: string): Chat => {
-  return {
-    id,
-    users: [],
-    messages: []
-  }
+const userHandler: RequestHandler<User> = {
+  request: (id) => user(id),
+  responseToString: (user) => user.email
 }
-
-class UserHandler implements RequestHandler<User> {
-  request(id: string) {
-    return user(id)
-  }
-}
-
-const handler = new UserHandler()
-const manager = new Manager(new URL('http://google.com'), 'abc123', handler)
+const manager = new Manager(new URL('http://google.com'), 'abc123', userHandler)
 
 const Query: QueryResolvers = {
   me: () => {

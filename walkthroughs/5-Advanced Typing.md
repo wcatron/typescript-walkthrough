@@ -66,6 +66,7 @@ export type ShapeProperties = {
   length?: number
   x?: number
   y?: number
+  z?: number
 }
 
 type RectangleProps = Required<Pick<ShapeProperties, 'height' | 'width'>>

@@ -11,6 +11,7 @@ Starting with a basic API manager.
 ### Javascript
 
 ```js
+// Manager.js
 class Manager {
   /**
    * @type {string}
@@ -27,6 +28,13 @@ class Manager {
 module.exports = {
   Manager
 }
+
+// index.js
+const Manager = require('./Manager').Manager
+
+const manager = new Manager('http://google.com')
+
+console.log(manager.url)
 ```
 
 ### Typescript
